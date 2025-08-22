@@ -152,7 +152,7 @@ public class AntStall extends ModelTask {
             Log.record(TAG,"执行开始-" + getName());
             String s = AntStallRpcCall.home();
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村主页失败:", jo)) {
                 if (!jo.getBoolean("hasRegister") || jo.getBoolean("hasQuit")) {
                     Log.farm("蚂蚁新村⛪请先开启蚂蚁新村");
                     return;
@@ -216,13 +216,13 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.shopSendBackPre(billNo, seatId, shopId, shopUserId);
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村请走预览失败:", jo)) {
                 JSONObject astPreviewShopSettleVO = jo.getJSONObject("astPreviewShopSettleVO");
                 JSONObject income = astPreviewShopSettleVO.getJSONObject("income");
                 int amount = (int) income.getDouble("amount");
                 s = AntStallRpcCall.shopSendBack(seatId);
                 jo = new JSONObject(s);
-                if (ResChecker.checkRes(TAG,jo)) {
+                if (ResChecker.checkRes(TAG + "蚂蚁新村请走失败:", jo)) {
                     Log.farm("蚂蚁新村⛪请走[" + UserMap.getMaskName(shopUserId) + "]的小摊"
                             + (amount > 0 ? "获得金币" + amount : ""));
                 } else {
@@ -243,7 +243,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.rankInviteOpen();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村好友排行榜失败:", jo)) {
                 JSONArray friendRankList = jo.getJSONArray("friendRankList");
                 for (int i = 0; i < friendRankList.length(); i++) {
                     JSONObject friend = friendRankList.getJSONObject(i);
@@ -258,7 +258,7 @@ public class AntStall extends ModelTask {
                     if (friend.getBoolean("canInviteOpenShop")) {
                         s = AntStallRpcCall.oneKeyInviteOpenShop(friendUserId, seatId);
                         jo = new JSONObject(s);
-                        if (ResChecker.checkRes(TAG,jo)) {
+                        if (ResChecker.checkRes(TAG + "蚂蚁新村邀请好友开店失败:", jo)) {
                             Log.farm("蚂蚁新村⛪邀请[" + UserMap.getMaskName(friendUserId) + "]开店成功");
                             return;
                         }
@@ -339,7 +339,7 @@ public class AntStall extends ModelTask {
                 if (fullShow || settleCoin > 100) {
                     String s = AntStallRpcCall.settle(assetId, settleCoin);
                     JSONObject jo = new JSONObject(s);
-                    if (ResChecker.checkRes(TAG,jo)) {
+                    if (ResChecker.checkRes(TAG + "蚂蚁新村收取金币失败:", jo)) {
                         Log.farm("蚂蚁新村⛪[收取金币]#" + settleCoin);
                     } else {
                         Log.record(TAG,"settle err:" + " " + s);
@@ -355,7 +355,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.shopList();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村店铺列表失败:", jo)) {
                 JSONArray astUserShopList = jo.getJSONArray("astUserShopList");
                 for (int i = 0; i < astUserShopList.length(); i++) {
                     JSONObject shop = astUserShopList.getJSONObject(i);
@@ -403,7 +403,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.shopList();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村店铺列表失败:", jo)) {
                 JSONArray astUserShopList = jo.getJSONArray("astUserShopList");
                 Queue<String> shopIds = new LinkedList<>();
                 for (int i = 0; i < astUserShopList.length(); i++) {
@@ -425,7 +425,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.rankCoinDonate();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村金币捐赠排行榜失败:", jo)) {
                 JSONArray friendRankList = jo.getJSONArray("friendRankList");
                 List<Seat> seats = new ArrayList<>();
                 for (int i = 0; i < friendRankList.length(); i++) {
@@ -499,11 +499,11 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.preShopClose(shopId, billNo);
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村收摊预览失败:", jo)) {
                 JSONObject income = jo.getJSONObject("astPreviewShopSettleVO").getJSONObject("income");
                 s = AntStallRpcCall.shopClose(shopId);
                 jo = new JSONObject(s);
-                if (ResChecker.checkRes(TAG,jo)) {
+                if (ResChecker.checkRes(TAG + "蚂蚁新村收摊失败:", jo)) {
                     Log.farm("蚂蚁新村⛪收取在[" + UserMap.getMaskName(userId) + "]的摊位获得" + income.getString("amount"));
                 } else {
                     Log.record(TAG,"shopClose err:" + " " + s);
@@ -520,7 +520,7 @@ public class AntStall extends ModelTask {
         try {
             String s = AntStallRpcCall.taskList();
             JSONObject jo = new JSONObject(s);
-            if (!ResChecker.checkRes(TAG,jo)) {
+            if (!ResChecker.checkRes(TAG + "查询蚂蚁新村任务列表失败:", jo)) {
                 Log.record(TAG,"taskList err:" + " " + s);
                 return;
             }
@@ -556,6 +556,7 @@ public class AntStall extends ModelTask {
                         case "ANTSTALL_NORMAL_DAILY_QA":
                             if (ReadingDada.answerQuestion(bizInfo)) {
                                 receiveTaskAward(taskType);
+                                GlobalThreadPools.sleep(200L);
                             }
                             break;
                         case "ANTSTALL_NORMAL_INVITE_REGISTER":
@@ -580,7 +581,6 @@ public class AntStall extends ModelTask {
 //                            if (!jo.optBoolean("success")) {
 //                                Log.runtime(TAG, "taskList.queryCallAppSchema err:" + jo.optString("resultDesc"));
 //                            }
-//                            Log.record("延时5S 芭芭农场");
 //                            GlobalThreadPools.sleep(5000);
 //                            AntStallRpcCall.home();
 //                            AntStallRpcCall.taskList();
@@ -599,13 +599,11 @@ public class AntStall extends ModelTask {
                             if (jsonArray == null || jsonArray.length() == 0) {
                                 continue;
                             }
-//                            Log.record("延时5S 木兰市集");
-//                            GlobalThreadPools.sleep(5000);
+                           Log.record("木兰市集开始");
                             for (int j = 0; j < jsonArray.length(); j++) {
                                 try{
                                     JSONObject jsonObject = jsonArray.getJSONObject(j);
                                     s = AntStallRpcCall.finish(pid, jsonObject);
-                                    Log.record("延时5S 木兰市集");
                                     GlobalThreadPools.sleep(5000);
                                     jo = new JSONObject(s);
                                     if (!jo.optBoolean("success")) {
@@ -616,9 +614,9 @@ public class AntStall extends ModelTask {
                                     Log.printStackTrace(TAG, t);
                                 }
                             }
+                            Log.record("木兰市集结束");
                             break;
                     }
-                    GlobalThreadPools.sleep(200L);
                 } catch (Throwable t) {
                     Log.runtime(TAG, "taskList for err:");
                     Log.printStackTrace(TAG, t);
@@ -633,7 +631,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.signToday();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "蚂蚁新村签到失败:", jo)) {
                 Log.farm("蚂蚁新村⛪[签到成功]");
             } else {
                 Log.record(TAG,"signToday err:" + " " + s);
@@ -682,7 +680,7 @@ public class AntStall extends ModelTask {
         try {
             String s = AntStallRpcCall.rankInviteRegister();
             JSONObject jo = new JSONObject(s);
-            if (!ResChecker.checkRes(TAG,jo)) {
+            if (!ResChecker.checkRes(TAG + "查询蚂蚁新村邀请注册排行榜失败:", jo)) {
                 Log.record(TAG,"rankInviteRegister err:" + " " + s);
                 return false;
             }
@@ -702,7 +700,7 @@ public class AntStall extends ModelTask {
                     continue;
                 }
                 jo = new JSONObject(AntStallRpcCall.friendInviteRegister(userId));
-                if (ResChecker.checkRes(TAG,jo)) {
+                if (ResChecker.checkRes(TAG + "蚂蚁新村邀请好友注册失败:", jo)) {
                     Log.farm("蚂蚁新村⛪邀请好友[" + UserMap.getMaskName(userId) + "]#开通新村");
                     return true;
                 } else {
@@ -868,7 +866,7 @@ public class AntStall extends ModelTask {
                     int manure = astManureInfoVO.getInt("manure");
                     s = AntStallRpcCall.collectManure();
                     jo = new JSONObject(s);
-                    if (ResChecker.checkRes(TAG,jo)) {
+                    if (ResChecker.checkRes(TAG + "蚂蚁新村收集肥料失败:", jo)) {
                         Log.farm("蚂蚁新村⛪获得肥料" + manure + "g");
                     }
                 }
@@ -884,7 +882,7 @@ public class AntStall extends ModelTask {
         try {
             String s = AntStallRpcCall.throwManure(dynamicList);
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "蚂蚁新村扔肥料失败:", jo)) {
                 Log.farm("蚂蚁新村⛪扔肥料");
             }
         } catch (Throwable th) {
@@ -902,7 +900,7 @@ public class AntStall extends ModelTask {
         try {
             String s = AntStallRpcCall.dynamicLoss();
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "查询蚂蚁新村动态列表失败:", jo)) {
                 JSONArray astLossDynamicVOS = jo.getJSONArray("astLossDynamicVOS");
                 JSONArray dynamicList = new JSONArray();
                 for (int i = 0; i < astLossDynamicVOS.length(); i++) {
@@ -942,7 +940,7 @@ public class AntStall extends ModelTask {
         String s = AntStallRpcCall.settleReceivable();
         try {
             JSONObject jo = new JSONObject(s);
-            if (ResChecker.checkRes(TAG,jo)) {
+            if (ResChecker.checkRes(TAG + "蚂蚁新村收取应收金币失败:", jo)) {
                 Log.farm("蚂蚁新村⛪收取应收金币");
             }
         } catch (Throwable th) {
